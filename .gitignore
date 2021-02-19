@@ -1,0 +1,16 @@
+# Jetbrains IDEs, Mac OS, and VsCode
+.idea*
+.DS_Store
+.vscode
+
+# Node/TSC/Snowpack related build stuff
+.snowpack*
+build*
+node_modules*
+*.tsbuildinfo
+.jest
+
+# Yarn and NPM build stuff
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
