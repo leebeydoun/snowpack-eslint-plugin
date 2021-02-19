@@ -9,6 +9,7 @@ build*
 node_modules*
 *.tsbuildinfo
 .jest
+pkg*
 
 # Yarn and NPM build stuff
 npm-debug.log*

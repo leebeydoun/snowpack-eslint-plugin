@@ -4,6 +4,7 @@
   "description": "Snowpack plugin to integrate eslint into the build process.",
   "author": "Lee",
   "license": "MIT",
+  "main": "pkg/dist-node/index.js",
   "scripts": {
     "build": "pika build",
     "deploy": "pika publish",

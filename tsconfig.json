@@ -3,6 +3,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "moduleResolution": "node",
+    "lib": ["ES2019"],
+    "module": "CommonJS",
+    "target": "ES2019"
   }
 }
