@@ -1,7 +1,7 @@
 {
-  "name": "@lee/snowpack-ts-eslint-plugin",
+  "name": "@lee/snowpack-eslint-plugin",
   "version": "0.0.1",
-  "description": "Snowpack plugin to integrate eslint into the build process for typescript files.",
+  "description": "Snowpack eslint plugin for all your linting needs",
   "author": "Lee",
   "license": "MIT",
   "main": "pkg/dist-node/index.js",
