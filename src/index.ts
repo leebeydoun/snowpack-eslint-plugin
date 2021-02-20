@@ -57,6 +57,7 @@ const plugin: SnowpackPluginFactory = (
     eslintCommand = 'eslint',
     eslintWatchArgs = '-w --clear src --ext .ts,.tsx,.js,.jsx',
     eslintWatchCommand = 'esw',
+    disableColoring = false,
   } = pluginOptions ?? {}
 
   const cmd = `${eslintCommand} ${eslintArgs}`
@@ -87,7 +88,10 @@ const plugin: SnowpackPluginFactory = (
       }
 
       function dataListener(chunk: any) {
-        let stdOutput = applyColour(chunk.toString(), formatter)
+        let stdOutput = disableColoring
+          ? chunk.toString()
+          : applyColour(chunk.toString(), formatter)
+
         if (output === 'stream') {
           log('CONSOLE_INFO', { msg: stdOutput })
           return
