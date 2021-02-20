@@ -1,7 +1,7 @@
 {
-  "name": "snowpack-eslint-plugin",
+  "name": "snowpack-ts-eslint-plugin",
   "version": "0.0.1",
-  "description": "Snowpack plugin to integrate eslint into the build process.",
+  "description": "Snowpack plugin to integrate eslint into the build process for typescript files.",
   "author": "Lee",
   "license": "MIT",
   "main": "pkg/dist-node/index.js",
@@ -9,7 +9,7 @@
     "build": "pika build",
     "deploy": "pika publish",
     "version": "npm run build",
-    "lint": "eslint '*/**/*.{js,ts,tsx}'"
+    "lint": "eslint 'src/**/*.{js,ts,tsx}'"
   },
   "@pika/pack": {
     "pipeline": [

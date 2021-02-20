@@ -3,9 +3,9 @@ import { ESLint } from 'eslint'
 import type { SnowpackPluginFactory } from 'snowpack'
 
 export interface SnowpackEslintPluginOptions extends Object {
-  input?: Array<string>
   eslintOptions?: ESLint.Options
   lintFormatter?: string
+  strict?: boolean
 }
 
 function normalisePath(id: string) {
@@ -17,7 +17,7 @@ const plugin: SnowpackPluginFactory = (
   pluginOptions: SnowpackEslintPluginOptions | undefined,
 ) => {
   const eslint = new ESLint(pluginOptions?.eslintOptions ?? {})
-  const input = pluginOptions?.input ?? ['.ts', '.tsx']
+  const input = ['.ts', '.tsx']
 
   return {
     name: 'snowpack-eslint-plugin',
@@ -28,7 +28,7 @@ const plugin: SnowpackPluginFactory = (
     async load(plo) {
       const file = normalisePath(plo.filePath)
 
-      if (!input.includes(plo.fileExt) || (await eslint.isPathIgnored(file))) return
+      if (!input.includes(plo.fileExt) || (await eslint.isPathIgnored(file))) return null
 
       const report = await eslint.lintFiles(file)
 
@@ -40,7 +40,13 @@ const plugin: SnowpackPluginFactory = (
       const formatter = await eslint.loadFormatter(pluginOptions?.lintFormatter ?? 'stylish')
 
       if (warningOnlyLintResults.length) console.warn(formatter.format(warningOnlyLintResults))
-      if (errorLintResults.length) throw new Error(formatter.format(errorLintResults))
+      if (errorLintResults.length) {
+        const isStrict = plo.isDev ? pluginOptions?.strict : true
+        if (isStrict) throw new Error(formatter.format(errorLintResults))
+        else console.error(formatter.format(errorLintResults))
+      }
+
+      return null
     },
   }
 }
