@@ -2,6 +2,10 @@
   "name": "@lee/snowpack-eslint-plugin",
   "version": "0.0.1",
   "description": "Snowpack eslint plugin for all your linting needs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leebeydoun/snowpack-eslint-plugin"
+  },
   "author": "Lee",
   "license": "MIT",
   "scripts": {
