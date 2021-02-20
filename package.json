@@ -1,6 +1,6 @@
 {
   "name": "@canarise/snowpack-eslint-plugin",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Snowpack eslint plugin for all your linting needs",
   "repository": {
     "type": "git",
