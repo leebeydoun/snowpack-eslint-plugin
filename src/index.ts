@@ -1,52 +1,64 @@
-import path from 'path'
-import { ESLint } from 'eslint'
+import execa from 'execa'
 import type { SnowpackPluginFactory } from 'snowpack'
+import npmRunPath from 'npm-run-path'
+
+const CLEAR_SEQUENCES = ['\x1Bc', '\x1B[2J\x1B[0;0f']
 
 export interface SnowpackEslintPluginOptions extends Object {
-  eslintOptions?: ESLint.Options
-  lintFormatter?: string
-  strict?: boolean
-}
-
-function normalisePath(id: string) {
-  return path.relative(process.cwd(), id).split(path.sep).join('/')
+  eslintArgs?: string
+  eslintCommand?: string
+  eslintWatchCommand?: string
+  eslintWatchArgs?: string
+  output?: 'dashboard' | 'stream'
+  name?: string
 }
 
 const plugin: SnowpackPluginFactory = (
-  _,
+  snowpackConfig,
   pluginOptions: SnowpackEslintPluginOptions | undefined,
 ) => {
-  const eslint = new ESLint(pluginOptions?.eslintOptions ?? {})
-  const input = ['.ts', '.tsx']
+  const {
+    output = 'dashboard',
+    name = '@lee/snowpack-eslint-plugin',
+    eslintArgs = 'src --ext .ts,.tsx,.js,.jsx',
+    eslintCommand = 'eslint',
+    eslintWatchArgs = '-w --clear src --ext .ts,.tsx,.js,.jsx',
+    eslintWatchCommand = 'esw',
+  } = pluginOptions ?? {}
+
+  const cmd = `${eslintCommand} ${eslintArgs}`
+  const watchCmd = `${eslintWatchCommand} ${eslintWatchArgs}`
 
   return {
-    name: 'snowpack-eslint-plugin',
-    resolve: {
-      input,
-      output: [],
-    },
-    async load(plo) {
-      const file = normalisePath(plo.filePath)
+    name,
+    // @ts-ignore
+    async run({ isDev, log }) {
+      const workerPromise = execa.command(isDev ? watchCmd : cmd, {
+        env: npmRunPath.env(),
+        extendEnv: true,
+        shell: true,
+        windowsHide: false,
+        cwd: snowpackConfig.root || process.cwd(),
+      })
 
-      if (!input.includes(plo.fileExt) || (await eslint.isPathIgnored(file))) return null
-
-      const report = await eslint.lintFiles(file)
-
-      const warningOnlyLintResults = report.filter(
-        (lintRes) => lintRes.errorCount <= 0 && lintRes.warningCount > 0,
-      )
-      const errorLintResults = report.filter((lintRes) => lintRes.errorCount >= 1)
-
-      const formatter = await eslint.loadFormatter(pluginOptions?.lintFormatter ?? 'stylish')
-
-      if (warningOnlyLintResults.length) console.warn(formatter.format(warningOnlyLintResults))
-      if (errorLintResults.length) {
-        const isStrict = plo.isDev ? pluginOptions?.strict : true
-        if (isStrict) throw new Error(formatter.format(errorLintResults))
-        else console.error(formatter.format(errorLintResults))
+      const { stdout, stderr } = workerPromise
+      function dataListener(chunk: any) {
+        let stdOutput = chunk.toString()
+        if (output === 'stream') {
+          log('CONSOLE_INFO', { msg: stdOutput })
+          return
+        }
+        if (CLEAR_SEQUENCES.some((s) => stdOutput.includes(s))) {
+          log('WORKER_RESET', {})
+          for (const s of CLEAR_SEQUENCES) {
+            stdOutput = stdOutput.replace(s, '')
+          }
+        }
+        log('WORKER_MSG', { level: 'log', msg: stdOutput })
       }
-
-      return null
+      stdout && stdout.on('data', dataListener)
+      stderr && stderr.on('data', dataListener)
+      return workerPromise
     },
   }
 }
