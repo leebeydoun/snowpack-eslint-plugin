@@ -6,8 +6,13 @@
     "type": "git",
     "url": "https://github.com/leebeydoun/snowpack-eslint-plugin"
   },
-  "author": "Lee",
+  "author": "Lee Beydoun",
   "license": "MIT",
+  "keywords": [
+    "snowpack",
+    "snowpack-eslint",
+    "snowpack plugin"
+  ],
   "scripts": {
     "build": "pika build",
     "deploy": "pika publish",
@@ -45,5 +50,9 @@
     "chalk": "^4.1.0",
     "execa": "^5.0.0",
     "npm-run-path": "^4.0.1"
+  },
+  "optionalDependencies": {
+    "eslint": "^7.0.0",
+    "eslint-watch": "^7.0.0"
   }
 }
