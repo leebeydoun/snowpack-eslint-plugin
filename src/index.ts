@@ -52,7 +52,7 @@ const plugin: SnowpackPluginFactory = (
 ) => {
   const {
     output = 'dashboard',
-    name = '@lee/snowpack-eslint-plugin',
+    name = '@canarise/snowpack-eslint-plugin',
     eslintArgs = 'src --ext .ts,.tsx,.js,.jsx',
     eslintCommand = 'eslint',
     eslintWatchArgs = '-w --clear src --ext .ts,.tsx,.js,.jsx',
