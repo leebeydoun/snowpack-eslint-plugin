@@ -1,5 +1,5 @@
 {
-  "name": "snowpack-ts-eslint-plugin",
+  "name": "@lee/snowpack-ts-eslint-plugin",
   "version": "0.0.1",
   "description": "Snowpack plugin to integrate eslint into the build process for typescript files.",
   "author": "Lee",
