@@ -18,7 +18,7 @@ With **yarn**
 
 With **npm**
 ```shell
-> npm install @canarise/snowpack-elsint-plugin
+> npm install @canarise/snowpack-eslint-plugin
 ```
 
 ## Usage:
