@@ -7,7 +7,7 @@ and build process.
 
 ## Install
 
-** Note, you must have eslint `^7.0.0` installed, [eslint](https://www.npmjs.com/package/eslint).
+**Note, you must have eslint `^7.0.0` installed, [eslint](https://www.npmjs.com/package/eslint).
 We recommend at least having eslint `v7.21.0` installed.**
 
 With **yarn**
