@@ -3,30 +3,27 @@ import type { SnowpackPluginFactory } from 'snowpack'
 import { ESLint } from 'eslint'
 
 type PluginOptions = {
-  cache?: boolean
-  fix?: boolean
-  include?: string[]
+  options?: ESLint.Options
+  globs?: string[]
   formatter?: string | ESLint.Formatter
 }
 
 const defaultOptions = {
-  cache: true,
-  fix: false,
-  include: [],
+  options: {
+    cache: true,
+    cacheStrategy: 'content',
+    fix: false,
+  },
+  globs: [],
   formatter: 'stylish',
 }
 
 const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions) => {
   const opts = { ...defaultOptions, ...pluginOptions }
-
-  const { cache = true, fix = false } = opts
-  const eslint = new ESLint({
-    cache,
-    fix,
-  })
+  const eslint = new ESLint(opts.options)
 
   const runLint = async () => {
-    const lintResult = await eslint.lintFiles(opts.include)
+    const lintResult = await eslint.lintFiles(opts.globs)
 
     const formatter =
       typeof opts.formatter === 'function'
@@ -35,7 +32,7 @@ const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions) => {
 
     const resultText = formatter.format(lintResult)
 
-    if (opts.fix && lintResult) ESLint.outputFixes(lintResult)
+    if (opts.options.fix && lintResult) ESLint.outputFixes(lintResult)
 
     console.log(resultText)
   }
