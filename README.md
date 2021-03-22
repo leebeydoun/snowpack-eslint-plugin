@@ -1,49 +1,36 @@
 # @canarise/snowpack-eslint-plugin
 
 `@canarise/snowpack-eslint-plugin` is a snowpack plugin to integrate [eslint](https://eslint.org/) into the snowpack develop
-and build process. This plugin will simply run eslint as a subprocess. It also provides some terminal coloring for
-errors and warnings via [chalk.js](https://github.com/chalk/chalk).
+and build process.
 
-![eslint errors in the terminal](.README_images/eslint_in_terminal.png)
+![picture 1](images/7b4c02c22c961527774f75c5d8e195163d4f78bf3deafa8087d9b0f2c6f02da0.png)
 
 ## Install
 
-**Note, by default [eslint](https://www.npmjs.com/package/eslint) and 
-[esw](https://www.npmjs.com/package/eslint-watch) are required, unless you change the lint commands (see below).**
+** Note, you must have eslint `^7.0.0` installed, [eslint](https://www.npmjs.com/package/eslint).
+We recommend at least having eslint `v7.21.0` installed.**
 
 With **yarn**
+
 ```shell
 > yarn add @canarise/snowpack-eslint-plugin
 ```
 
 With **npm**
+
 ```shell
 > npm install @canarise/snowpack-eslint-plugin
 ```
 
-## Usage:
+With **pnpm**
 
-Simple add it to your snowpack config:
-
-```js
-module.exports = {
-  mount: {
-    ...
-  },
-  plugins: [
-    '@snowpack/plugin-react-refresh',
-    '@snowpack/plugin-dotenv',
-    '@snowpack/plugin-typescript',
-    '@snowpack/plugin-postcss',
-    '@canarise/snowpack-eslint-plugin',
-  ],
-  routes: [
-    ...
-  ],
-}
+```shell
+pnpm i @canarise/snowpack-eslint-plugin
 ```
 
-Or with some arguments:
+## Usage:
+
+Simply add it to your snowpack config:
 
 ```js
 module.exports = {
@@ -55,13 +42,7 @@ module.exports = {
     '@snowpack/plugin-dotenv',
     '@snowpack/plugin-typescript',
     '@snowpack/plugin-postcss',
-    [
-      'snowpack-eslint-plugin',
-      {
-        name: 'lee',
-        disableColoring: true,
-      },
-    ],
+    ['@canarise/snowpack-eslint-plugin', { globs: ['src/**/*.tsx', 'src/**/*.ts'], options: { /* any eslint options here */ } }],
   ],
   routes: [
     ...
@@ -71,29 +52,38 @@ module.exports = {
 
 ## Configuration
 
-When configuring this plugin, it's important to understand the plugin basically does the same as the configuration below, with
-a few extras (coloring in the terminal):
-```js
-plugins: [
-  [
-    '@snowpack/plugin-run-script',
-    {
-      cmd: 'eslint src --ext .ts,.tsx,.js,.jsx',
-      watch: 'esw -w --clear src --ext .ts,.tsx,.js,.jsx',
-    },
-  ],
-]
+There are a few options you can use. The `PluginOptions` type is:
+
+```ts
+type PluginOptions = {
+  options?: ESLint.Options
+  globs?: string[]
+  formatter?: string | ESLint.Formatter
+}
 ```
 
+### `options`
 
-There are a few options you can use:
+Options is any valid eslint option. We pass this to `ESlint`, so it may be useful to refer to (this for possible
+values you can use)[https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions]. By default the following
+options are passed to `ESLint` unless overridden:
 
-| option | default | description |
-| ------ | ------- | ----------- |
-| `eslintArgs` | `"src --ext .ts,.tsx,.js,.jsx"` | The arguments to provide to the eslint command |
-| `eslintCommand` | `"eslint"` | The command to run for eslint |
-| `eslintWatchArgs` | `"-w --clear src --ext .ts,.tsx,.js,.jsx"` | The arguments to provide to the eslint watch command |
-| `eslintWatchCommand` | `"esw"` | The command to run for eslint when watching, i.e. in dev |
-| `output` | `"dashboard"` | Can be either `dashboard` or `stream`. Changes the way linting output is logged in the terminal |
-| `name` | `"@canarise/snowpack-eslint-plugin"` | Changes the name of the plugin in that appears in the terminal |
-| `disableColoring` | `false` | Disables color highlighting for eslint results |
+```js
+{
+  cache: true,
+  cacheStrategy: 'content',
+  fix: false
+}
+```
+
+### `globs`
+
+Globs is an array of string globs to lint files, for example `['**/*.ts', '**/*.tsx']`. By default this is an empty
+array. **In almost all cases you will need to provide this**. We cannot predict want sort of files you would like to
+lint, and would rather not make the decision for you. Furthermore, at least one file for each glob you provide must be present,
+otherwise an error will be thrown, which the plugin will not catch. This error is thrown by `eslint` and is the default behaviour.
+
+### `formatter`
+
+The formatter to use for lint output. You can provide your own, or use one of `eslint`'s built in ones. By
+default we use `stylish`. See (eslint formatters)[https://eslint.org/docs/user-guide/formatters/] for other options.
