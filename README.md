@@ -42,7 +42,11 @@ module.exports = {
     '@snowpack/plugin-dotenv',
     '@snowpack/plugin-typescript',
     '@snowpack/plugin-postcss',
-    ['@canarise/snowpack-eslint-plugin', { globs: ['src/**/*.tsx', 'src/**/*.ts'], options: { /* any eslint options here */ } }],
+    ['@canarise/snowpack-eslint-plugin', {
+      globs: ['src/**/*.tsx', 'src/**/*.ts'],
+      options: { /* any eslint options here */ },
+      formatter: 'stylish'
+    }],
   ],
   routes: [
     ...
