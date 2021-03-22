@@ -68,8 +68,8 @@ type PluginOptions = {
 
 ### `options`
 
-Options is any valid eslint option. We pass this to `ESlint`, so it may be useful to refer to (this for possible
-values you can use)[https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions]. By default the following
+Options is any valid eslint option. We pass this to `ESlint`, so it may be useful to refer to [this for possible
+values you can use](https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions). By default the following
 options are passed to `ESLint` unless overridden:
 
 ```js
@@ -90,4 +90,4 @@ otherwise an error will be thrown, which the plugin will not catch. This error i
 ### `formatter`
 
 The formatter to use for lint output. You can provide your own, or use one of `eslint`'s built in ones. By
-default we use `stylish`. See (eslint formatters)[https://eslint.org/docs/user-guide/formatters/] for other options.
+default we use `stylish`. See [eslint formatters](https://eslint.org/docs/user-guide/formatters/) for other options.
