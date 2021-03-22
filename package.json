@@ -14,7 +14,7 @@
     "snowpack plugin"
   ],
   "scripts": {
-    "build": "pika build",
+    "build": "pika-pack build",
     "deploy": "pika publish",
     "version": "npm run build",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'"
