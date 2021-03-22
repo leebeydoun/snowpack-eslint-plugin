@@ -43,7 +43,7 @@ module.exports = {
     '@snowpack/plugin-typescript',
     '@snowpack/plugin-postcss',
     ['@canarise/snowpack-eslint-plugin', {
-      globs: ['src/**/*.tsx', 'src/**/*.ts'],
+      globs: ['src/**/*.tsx', 'src/**/*.ts'], // You should provide this
       options: { /* any eslint options here */ },
       formatter: 'stylish'
     }],
