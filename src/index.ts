@@ -11,16 +11,23 @@ type PluginOptions = {
 const defaultOptions = {
   options: {
     cache: true,
-    cacheStrategy: 'content',
+    cacheStrategy: 'content' as 'content',
     fix: false,
   },
   globs: [],
   formatter: 'stylish',
 }
 
-let logger;
+let logger: (s: string, { msg }: { msg: string }) => void;
 
-const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions) => {
+interface PluginFactory extends ReturnType<SnowpackPluginFactory> {
+  run({ isDev, log } : {
+    isDev: boolean,
+    log: (s: string, { msg }: { msg: string }) => void,
+  }): Promise<unknown>
+}
+
+const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions): PluginFactory => {
   const opts = { ...defaultOptions, ...pluginOptions }
   const eslint = new ESLint(opts.options)
 
