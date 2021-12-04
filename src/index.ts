@@ -1,4 +1,4 @@
-import type { SnowpackPluginFactory } from 'snowpack'
+import type { SnowpackPluginFactory, PluginRunOptions } from 'snowpack'
 
 import { ESLint } from 'eslint'
 
@@ -18,14 +18,14 @@ const defaultOptions = {
   formatter: 'stylish',
 }
 
-let logger: (s: string, { msg }: { msg: string }) => void;
-
+type Logger = (s: string, { msg }: { msg: string }) => void;
 interface PluginFactory extends ReturnType<SnowpackPluginFactory> {
-  run({ isDev, log } : {
-    isDev: boolean,
-    log: (s: string, { msg }: { msg: string }) => void,
+  run({ isDev, log } : PluginRunOptions & {
+    log: Logger,
   }): Promise<unknown>
 }
+
+let logger: Logger;
 
 const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions): PluginFactory => {
   const opts = { ...defaultOptions, ...pluginOptions }
