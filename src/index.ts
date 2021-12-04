@@ -37,9 +37,9 @@ const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions) => {
     if (opts.options.fix && lintResult) ESLint.outputFixes(lintResult)
     
     if(resultText.length === 0){
-      log('WORKER_MSG', {msg: `No lint errors found.`})
+      logger('WORKER_MSG', {msg: `No lint errors found.`})
     } else {
-      log('WORKER_MSG', {msg: resultText})
+      logger('WORKER_MSG', {msg: resultText})
     }
   }
 
