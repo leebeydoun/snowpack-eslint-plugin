@@ -18,6 +18,8 @@ const defaultOptions = {
   formatter: 'stylish',
 }
 
+let logger;
+
 const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions) => {
   const opts = { ...defaultOptions, ...pluginOptions }
   const eslint = new ESLint(opts.options)
@@ -33,13 +35,18 @@ const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions) => {
     const resultText = formatter.format(lintResult)
 
     if (opts.options.fix && lintResult) ESLint.outputFixes(lintResult)
-
-    console.log(resultText)
+    
+    if(resultText.length === 0){
+      log('WORKER_MSG', {msg: `No lint errors found.`})
+    } else {
+      log('WORKER_MSG', {msg: resultText})
+    }
   }
 
   return {
     name: '@canarise/snowpack-eslint-plugin',
-    run() {
+    run({log}) {
+      logger = log;
       return runLint()
     },
     onChange() {
