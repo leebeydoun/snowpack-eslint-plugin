@@ -57,6 +57,7 @@ const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions): Plugin
       return runLint()
     },
     onChange() {
+      logger('WORKER_RESET', {});
       return runLint()
     },
   }
