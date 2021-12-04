@@ -1,4 +1,4 @@
-import type { SnowpackPluginFactory } from 'snowpack'
+import type { SnowpackPluginFactory, PluginRunOptions } from 'snowpack'
 
 import { ESLint } from 'eslint'
 
@@ -11,14 +11,23 @@ type PluginOptions = {
 const defaultOptions = {
   options: {
     cache: true,
-    cacheStrategy: 'content',
+    cacheStrategy: 'content' as 'content',
     fix: false,
   },
   globs: [],
   formatter: 'stylish',
 }
 
-const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions) => {
+type Logger = (s: string, { msg }: { msg: string }) => void;
+interface PluginFactory extends ReturnType<SnowpackPluginFactory> {
+  run({ isDev, log } : PluginRunOptions & {
+    log: Logger,
+  }): Promise<unknown>
+}
+
+let logger: Logger;
+
+const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions): PluginFactory => {
   const opts = { ...defaultOptions, ...pluginOptions }
   const eslint = new ESLint(opts.options)
 
@@ -33,16 +42,22 @@ const plugin: SnowpackPluginFactory = (_, pluginOptions?: PluginOptions) => {
     const resultText = formatter.format(lintResult)
 
     if (opts.options.fix && lintResult) ESLint.outputFixes(lintResult)
-
-    console.log(resultText)
+    
+    if(resultText.length === 0){
+      logger('WORKER_MSG', {msg: `No lint errors found.`})
+    } else {
+      logger('WORKER_MSG', {msg: resultText})
+    }
   }
 
   return {
     name: '@canarise/snowpack-eslint-plugin',
-    run() {
+    run({log}) {
+      logger = log;
       return runLint()
     },
     onChange() {
+      logger('WORKER_RESET', {});
       return runLint()
     },
   }
